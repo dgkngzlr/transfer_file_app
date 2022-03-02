@@ -15,8 +15,11 @@ def fetch_saved_ips():
 
 
 def get_host_ip():
-    host_ip = socket.gethostbyname(socket.gethostname())
-    return host_ip
+    with socket.socket(socket.AF_INET, socket.SOCK_DGRAM) as s:
+        s.connect(('8.8.8.8', 1))  # connect() for UDP doesn't send packets
+        local_ip_addr = s.getsockname()[0]
+
+    return local_ip_addr
 
 
 class Logger:
