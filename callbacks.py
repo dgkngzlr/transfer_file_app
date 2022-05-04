@@ -53,12 +53,11 @@ def about_callback(sender, app_data, user_data):
 # Transmit operation here
 def continue_transmitting_callback(sender, app_data, user_data):
     dpg.configure_item("modal_id", show=False)
-    if FILE_NAME.strip() != "" and dpg.get_value('ip_text').strip() != "":
+    if FILE_NAME.strip() != "":
         Logger.write("transmitter_log", f"File : {FILE_NAME.strip()}")
-        Logger.write("transmitter_log", f"Destination : {dpg.get_value('ip_text').strip()}")
         Logger.write("transmitter_log", "File is transmitting, please wait ...")
         dpg.configure_item("transmit_button", enabled=False)
-        Sender.send_file(file_path=FILE_PATH, dest_ip=dpg.get_value("ip_text").strip())
+        Sender.send_file(file_path=FILE_PATH, ip="0.0.0.0")
         Logger.write("transmitter_log", "File is transmitted")
     else:
         Logger.write("transmitter_log", "Fill in the fields above !", level="error")
@@ -66,10 +65,11 @@ def continue_transmitting_callback(sender, app_data, user_data):
 
 # Receive operation here
 def receive_button_callback(sender, app_data, user_data):
-    if dpg.get_value("destination_text") != "":
+    if dpg.get_value("destination_text") != "" and dpg.get_value('ip_text').strip() != "":
         Logger.write("receiver_log", "File is receiving, please wait ...")
+        Logger.write("receiver_log", f"From : {dpg.get_value('ip_text').strip()}")
         dpg.configure_item("receive_button", enabled=False)
-        Receiver.receive_file(dest_direct=dpg.get_value("destination_text"))
+        Receiver.receive_file(dest_direct=dpg.get_value("destination_text"), from_=dpg.get_value("ip_text").strip())
         Logger.write("receiver_log", "File is received !")
     else:
         Logger.write("receiver_log", "Fill in the fields above !", level="error")

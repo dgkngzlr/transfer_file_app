@@ -13,21 +13,9 @@ with dpg.window(tag="main_window"):
     with dpg.tab_bar():
         # Transmit File tab context
         with dpg.tab(label="Transmit File"):
-            dpg.add_text(default_value="IP Address :")
+            dpg.add_text(default_value=f"Host IP : {get_host_ip()}")
 
-            # Set horizontal layout of input text and button
-            with dpg.group(horizontal=True):
-                ip_text = dpg.add_input_text(tag="ip_text", scientific=True, hint="Enter destination IP Address")
-                save_button = dpg.add_button(label="Save", width=100, callback=save_button_callback)
-
-            dpg.add_text(default_value="Saved IPs :")
-
-            # Set horizontal layout of list box and button
-            with dpg.group(horizontal=True):
-                ip_list_box = dpg.add_listbox(tag="ip_list_box")
-                select_button = dpg.add_button(label="Select", width=100, callback=select_button_callback)
-
-            dpg.add_text(default_value="\nFile :")
+            dpg.add_text(default_value="File :")
 
             # Set horizontal layout of input text and button
             with dpg.group(horizontal=True):
@@ -35,7 +23,7 @@ with dpg.window(tag="main_window"):
                 browse_button = dpg.add_button(label="Browse", width=100, callback=browse_button_callback)
 
             dpg.add_text(default_value="\n\n")
-
+            dpg.add_text(default_value="\n")
             # Make responsive the button
             # Set grid layout to locate the button
             with dpg.table(header_row=False):
@@ -64,8 +52,22 @@ with dpg.window(tag="main_window"):
 
         # Receive File tab context
         with dpg.tab(label="Receive File"):
-            dpg.add_text(default_value=f"Host IP : {get_host_ip()}")
+            dpg.add_text(default_value="Receive From :")
+
+            # Set horizontal layout of input text and button
+            with dpg.group(horizontal=True):
+                ip_text = dpg.add_input_text(tag="ip_text", scientific=True, hint="Enter transmitter IP Address")
+                save_button = dpg.add_button(label="Save", width=100, callback=save_button_callback)
+
+            dpg.add_text(default_value="Saved IPs :")
+
+            # Set horizontal layout of list box and button
+            with dpg.group(horizontal=True):
+                ip_list_box = dpg.add_listbox(tag="ip_list_box")
+                select_button = dpg.add_button(label="Select", width=100, callback=select_button_callback)
+
             dpg.add_text(default_value="\n")
+            dpg.add_separator()
             dpg.add_text(default_value="Destination Directory :")
 
             with dpg.group(horizontal=True):
@@ -121,7 +123,7 @@ with dpg.window(label="Reminder", modal=True, show=False, id="modal_id"):
 
 with dpg.window(label="About", modal=True, show=False, id="modal_about", width=380):
     dpg.add_text("Version : v0.1")
-    dpg.add_text("Author : dgkngzlr")
+    dpg.add_text("Developer: dgkngzlr")
     dpg.add_separator()
 
     with dpg.table(header_row=False):

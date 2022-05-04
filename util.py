@@ -46,18 +46,18 @@ class Logger:
 class Sender:
 
     @classmethod
-    def send_msg(cls, msg, dest_ip):
+    def send_msg(cls, msg, ip="127.0.0.1"):
         with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
             s.settimeout(60)
 
-            s.bind((dest_ip, 5506))
+            s.bind((ip, 5506))
             s.listen()
 
             conn, addr = s.accept()
             conn.send(msg.encode())
 
     @classmethod
-    def send_file(cls, file_path, dest_ip=""):
+    def send_file(cls, file_path, ip="127.0.0.1"):
         file_name: str
         file_size = os.path.getsize(file_path)
 
@@ -66,19 +66,17 @@ class Sender:
         else:
             file_name = file_path.split("/")[-1]
 
-        Sender.send_msg(file_name, dest_ip=dest_ip)
-        Sender.send_msg(f"{file_size}", dest_ip=dest_ip)
-
-        sent_size = 0
+        Sender.send_msg(file_name, ip=ip)
+        Sender.send_msg(f"{file_size}", ip=ip)
 
         with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
             s.settimeout(60)
 
-            s.bind((dest_ip, 5506))
+            s.bind((ip, 5506))
             s.listen()
 
             conn, addr = s.accept()
-
+            sent_size = 0
             dpg.configure_item('pb', default_value=sent_size / file_size)
             with open(file_path, "rb") as f:
                 while sent_size < file_size:
@@ -94,13 +92,13 @@ class Sender:
 class Receiver:
 
     @classmethod
-    def receive_msg(cls) -> str:
+    def receive_msg(cls, from_="127.0.0.1") -> str:
         flag = True
         with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
 
             while flag:
                 try:
-                    s.connect(("127.0.0.1", 5506))
+                    s.connect((from_, 5506))
                     flag = False
                 except Exception as e:
                     pass
@@ -110,7 +108,7 @@ class Receiver:
         return msg.decode("utf-8")
 
     @classmethod
-    def receive_file(cls, dest_direct):
+    def receive_file(cls, dest_direct, from_="127.0.0.1"):
 
         file_name = Receiver.receive_msg()
         file_size = int(Receiver.receive_msg())
@@ -127,7 +125,7 @@ class Receiver:
 
             while flag:
                 try:
-                    s.connect(("127.0.0.1", 5506))
+                    s.connect((from_, 5506))
                     flag = False
                 except Exception as e:
                     pass
