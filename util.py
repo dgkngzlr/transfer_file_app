@@ -50,7 +50,7 @@ class Sender:
         with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
             s.settimeout(60)
 
-            s.bind((ip, 5506))
+            s.bind((ip, 55055))
             s.listen()
 
             conn, addr = s.accept()
@@ -72,7 +72,7 @@ class Sender:
         with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
             s.settimeout(60)
 
-            s.bind((ip, 5506))
+            s.bind((ip, 55055))
             s.listen()
 
             conn, addr = s.accept()
@@ -98,7 +98,7 @@ class Receiver:
 
             while flag:
                 try:
-                    s.connect((from_, 5506))
+                    s.connect((from_, 55055))
                     flag = False
                 except Exception as e:
                     pass
@@ -110,8 +110,8 @@ class Receiver:
     @classmethod
     def receive_file(cls, dest_direct, from_="127.0.0.1"):
 
-        file_name = Receiver.receive_msg()
-        file_size = int(Receiver.receive_msg())
+        file_name = Receiver.receive_msg(from_)
+        file_size = int(Receiver.receive_msg(from_))
         dest_path: str
         Logger.write("receiver_log", f"File : {file_name}")
 
@@ -125,7 +125,7 @@ class Receiver:
 
             while flag:
                 try:
-                    s.connect((from_, 5506))
+                    s.connect((from_, 55055))
                     flag = False
                 except Exception as e:
                     pass
